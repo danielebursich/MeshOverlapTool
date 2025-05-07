@@ -1,0 +1,2 @@
+streamlit run mesh_overlap_app.py
+pause
