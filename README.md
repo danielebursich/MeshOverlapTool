@@ -1,3 +1,5 @@
+All data published in Zenodo - <a href="https://doi.org/10.5281/zenodo.15357334"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.15357334.svg" alt="DOI"></a>
+
 # Mesh Overlap Analysis Dashboard
 
 A Streamlit-based interactive application for statistical analysis of 1D datasets, with a strong emphasis on quality control and tolerance verification in industrial and metrological contexts.
