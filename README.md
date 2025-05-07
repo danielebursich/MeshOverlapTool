@@ -1,4 +1,5 @@
 All data published in Zenodo - <a href="https://doi.org/10.5281/zenodo.15357334"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.15357334.svg" alt="DOI"></a>
+Bursich, Daniele. «Mesh Overlap Tool». Zenodo, 7 maggio 2025. https://doi.org/10.5281/zenodo.15357334.
 
 # Mesh Overlap Analysis Dashboard
 
