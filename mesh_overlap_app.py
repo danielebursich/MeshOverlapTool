@@ -48,7 +48,7 @@ marker_shape = st.sidebar.selectbox("Forma marker scatter", ["o", "s", "^", "*",
 
 uploaded_files = st.sidebar.file_uploader("Carica uno o più file .txt", type="txt", accept_multiple_files=True)
 immagine = st.sidebar.file_uploader("Carica immagine di intestazione", type=['png','jpg','jpeg'])
-tolerance = st.sidebar.number_input("Tolleranza ±", value=0.003, min_value=0.0001, max_value=0.01, step=0.0001)
+tolerance = st.sidebar.number_input("Tolleranza ±", value=0.003, min_value=0.0001, max_value=0.1, step=0.001, format="%0.4f")
 radar_enabled = st.sidebar.checkbox("Abilita grafico radar se > 1 file")
 compare_enabled = st.sidebar.checkbox("Confronta tutti i file in una tabella unica")
 
@@ -125,6 +125,7 @@ if uploaded_files:
             data = pd.to_numeric(pd.Series(raw), errors='coerce')
             total_points = len(data)
             clean_data = data.dropna().reset_index(drop=True)
+            selected_range = clean_data[clean_data.between(-tolerance, tolerance, inclusive='both')]
             nan_removed = total_points - len(clean_data)
 
             q1 = np.percentile(clean_data, 25)
@@ -137,22 +138,25 @@ if uploaded_files:
                 "Totale Punti": total_points,
                 "NaN Rimossi": nan_removed,
                 "Punti Utili": len(clean_data),
-                "Minimo": clean_data.min(),
-                "Massimo": clean_data.max(),
-                "Media": clean_data.mean(),
-                "Dev. Std": clean_data.std(),
-                "Deviazione Media": np.mean(np.abs(clean_data - clean_data.mean())),
-                "Skewness": skew(clean_data),
-                "Kurtosi": clean_data.kurtosis(),
-                "RMSE": np.sqrt(np.mean(clean_data ** 2)),
+                "In tolleranza": clean_data.between(-tolerance, tolerance, inclusive='both').sum(),
+                "Minimo": selected_range.min(),
+                "Massimo": selected_range.max(),
+                "Media": selected_range.mean(),
+                "Dev. Std": selected_range.std(),
+                # "Deviazione Media": np.mean(np.abs(clean_data - clean_data.mean())),
+                # "Skewness": skew(clean_data),
+                # "Kurtosi": clean_data.kurtosis(),
+                # "RMSE": np.sqrt(np.mean(clean_data ** 2)),
                 "Q1": q1,
-                "Mediana": np.percentile(clean_data, 50),
+                "Mediana": np.percentile(selected_range, 50),
                 "Q3": q3,
-                "IQR": iqr,
-                "Outlier Bassi": outlier_low.sum(),
-                "Outlier Alti": outlier_high.sum(),
-                "% in Tolleranza ±": ((clean_data.between(-tolerance, tolerance)).sum() / len(clean_data)) * 100
+                # "IQR": iqr,
+                # "Outlier Bassi": outlier_low.sum(),
+                # "Outlier Alti": outlier_high.sum(),
+                "% in Tolleranza ±": ((clean_data.between(-tolerance, tolerance, inclusive='both')).sum() / len(clean_data)) * 100
             }
+            
+            radar_data[file.name] = stats["% in Tolleranza ±"]
 
             st.dataframe(pd.DataFrame([stats]))
 
